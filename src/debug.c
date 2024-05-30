@@ -20,11 +20,12 @@ int simpleInstruction(const char *name, int offset) {
 int disassembleInstruction(Chunk *chunk, int offset) {
   printf("%04d ", offset);
 
-  if(offset > 0 &&
-     chunk->lines[offset] == chunk->lines[offset - 1]) {
+  int curLine = getLine(&chunk->lines, offset);
+  int prevLine = getLine(&chunk->lines, offset);
+  if (offset > 0 && curLine == prevLine) {
     printf("   | ");
   } else {
-    printf("%4d ", chunk->lines[offset]);
+    printf("%4d ", curLine);
   }
 
   uint8_t instruction = chunk->code[offset];
@@ -34,9 +35,7 @@ int disassembleInstruction(Chunk *chunk, int offset) {
   case OP_CONSTANT:
     return constantInstruction("OP_CONSTANT", chunk, offset);
   default:
-    printf(
-        "Unknown opcode %d\n",
-        instruction);
+    printf("Unknown opcode %d\n", instruction);
     return offset + 1;
   }
 }
