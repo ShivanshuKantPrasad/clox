@@ -36,6 +36,19 @@ size_t addConstant(Chunk *chunk, Value value) {
   return chunk->constants.count - 1;
 }
 
+void writeConstant(Chunk *chunk, Value value, int line) {
+  size_t constant = addConstant(chunk, value);
+  if (constant < 256) {
+    writeChunk(chunk, OP_CONSTANT, line);
+    writeChunk(chunk, constant, line);
+  } else {
+    writeChunk(chunk, OP_CONSTANT_LONG, line);
+    writeChunk(chunk, constant >> 16, line);
+    writeChunk(chunk, constant >> 8, line);
+    writeChunk(chunk, constant, line);
+  }
+}
+
 void initLine(Line *lines) {
   lines->number = NULL;
   lines->length = NULL;
@@ -62,7 +75,8 @@ void writeLine(Line *lines, int line) {
                                  oldCapacity, lines->capacity);
     }
     lines->number[lines->count] = line;
-    lines->length[lines->count] = 0;
+    lines->length[lines->count] = 1;
+    lines->count++;
   }
 }
 
@@ -72,5 +86,5 @@ int getLine(Line *lines, int offset) {
     offset -= lines->length[index];
     index++;
   }
-  return lines->number[offset];
+  return lines->number[index];
 }

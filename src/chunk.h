@@ -4,6 +4,7 @@
 #include "value.h"
 
 typedef enum {
+  OP_CONSTANT_LONG,
   OP_CONSTANT,
   OP_RETURN,
 } OpCode;
@@ -27,6 +28,7 @@ void initChunk(Chunk *chunk);
 void freeChunk(Chunk *chunk);
 void writeChunk(Chunk *chunk, uint8_t byte, int line);
 size_t addConstant(Chunk *chunk, Value value);
+void writeConstant(Chunk* chunk, Value value, int line);
 
 void initLine(Line *lines);
 void freeLine(Line *lines);

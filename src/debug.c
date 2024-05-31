@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 static int constantInstruction(const char *name, Chunk *chunk, int offset);
+static int constantLongInstruction(const char *name, Chunk *chunk, int offset);
 
 void disassembleChunk(Chunk *chunk, const char *name) {
   printf("== %s ==\n", name);
@@ -20,7 +21,7 @@ int simpleInstruction(const char *name, int offset) {
 int disassembleInstruction(Chunk *chunk, int offset) {
   printf("%04d ", offset);
 
-  int curLine = getLine(&chunk->lines, offset);
+  int curLine = getLine(&chunk->lines, offset + 1);
   int prevLine = getLine(&chunk->lines, offset);
   if (offset > 0 && curLine == prevLine) {
     printf("   | ");
@@ -34,6 +35,8 @@ int disassembleInstruction(Chunk *chunk, int offset) {
     return simpleInstruction("OP_RETURN", offset);
   case OP_CONSTANT:
     return constantInstruction("OP_CONSTANT", chunk, offset);
+  case OP_CONSTANT_LONG:
+    return constantLongInstruction("OP_CONSTANT_LONG", chunk, offset);
   default:
     printf("Unknown opcode %d\n", instruction);
     return offset + 1;
@@ -46,4 +49,14 @@ static int constantInstruction(const char *name, Chunk *chunk, int offset) {
   printValue(chunk->constants.values[constant]);
   printf("'\n");
   return offset + 2;
+}
+
+int constantLongInstruction(const char *name, Chunk *chunk, int offset) {
+  uint32_t constant = (chunk->code[offset + 1] << 16) +
+          (chunk->code[offset + 2] << 8) +
+          (chunk->code[offset + 3]);
+  printf("%-16s %16d '", name, constant);
+  printValue(chunk->constants.values[constant]);
+  printf("'\n");
+  return offset + 4;
 }
