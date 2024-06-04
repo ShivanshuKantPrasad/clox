@@ -1,8 +1,6 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include "chunk.h"
-#include "debug.h"
 #include "vm.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 static void repl() {
   char line[1024];
@@ -29,9 +27,9 @@ static char *readFile(const char *path) {
   size_t fileSize = ftell(file);
   rewind(file);
 
-  char* buffer = (char*)malloc(fileSize + 1);
+  char *buffer = (char *)malloc(fileSize + 1);
   if (buffer == NULL) {
-    fprintf(stderr, "Buy more memory LOL", path);
+    fprintf(stderr, "Buy more memory LOL.");
     exit(74);
   }
   size_t bytesRead = fread(buffer, sizeof(char), fileSize, file);
@@ -45,45 +43,28 @@ static char *readFile(const char *path) {
   return buffer;
 }
 
-static void runFile(const char* path) {
-  char* source = readFile(path);
-  InterpretResult  result = interpret(source);
+static void runFile(const char *path) {
+  char *source = readFile(path);
+  InterpretResult result = interpret(source);
   free(source);
 
-  if (result == INTERPRET_COMPILE_ERROR) exit(65);
-  if (result == INTERPRET_RUNTIME_ERROR) exit(70);
+  if (result == INTERPRET_COMPILE_ERROR)
+    exit(65);
+  if (result == INTERPRET_RUNTIME_ERROR)
+    exit(70);
 }
-
 
 int main(int argc, const char *argv[]) {
   initVM();
 
   if (argc == 1) {
     repl();
-  } else if(argc == 2) {
+  } else if (argc == 2) {
     runFile(argv[1]);
   } else {
     fprintf(stderr, "Usage: clox [path]\n");
     exit(64);
   }
 
-  Chunk chunk;
-  initChunk(&chunk);
-
-//  for(int i = 0; i < 500; i++) {
-//    writeConstant(&chunk, 1.0f + i / 10.0f, i / 3);
-//  }
-  writeConstant(&chunk, 1.2, 123);
-  writeConstant(&chunk, 3.4, 123);
-  writeChunk(&chunk, OP_ADD, 123);
-  writeConstant(&chunk, 5.6, 123);
-  writeChunk(&chunk, OP_DIVIDE, 123);
-  writeChunk(&chunk, OP_NEGATE, 123);
-  writeChunk(&chunk, OP_RETURN, 126);
-
-//  disassembleChunk(&chunk, "test chunk");
-  interpret(&chunk);
-  freeVM();
-  freeChunk(&chunk);
   return 0;
 }

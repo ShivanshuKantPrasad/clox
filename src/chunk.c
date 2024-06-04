@@ -22,8 +22,8 @@ void writeChunk(Chunk *chunk, uint8_t byte, int line) {
   if (chunk->capacity < chunk->count + 1) {
     size_t oldCapacity = chunk->capacity;
     chunk->capacity = GROW_CAPACITY(oldCapacity);
-    chunk->code = GROW_ARRAY(uint8_t, chunk->code,
-                             oldCapacity, chunk->capacity);
+    chunk->code =
+        GROW_ARRAY(uint8_t, chunk->code, oldCapacity, chunk->capacity);
   }
 
   writeLine(&chunk->lines, line);
@@ -69,10 +69,10 @@ void writeLine(Line *lines, int line) {
     if (lines->capacity < lines->count + 1) {
       size_t oldCapacity = lines->capacity;
       lines->capacity = GROW_CAPACITY(oldCapacity);
-      lines->length = GROW_ARRAY(int, lines->length,
-                                 oldCapacity, lines->capacity);
-      lines->number = GROW_ARRAY(int, lines->number,
-                                 oldCapacity, lines->capacity);
+      lines->length =
+          GROW_ARRAY(int, lines->length, oldCapacity, lines->capacity);
+      lines->number =
+          GROW_ARRAY(int, lines->number, oldCapacity, lines->capacity);
     }
     lines->number[lines->count] = line;
     lines->length[lines->count] = 1;
