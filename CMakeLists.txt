@@ -12,5 +12,7 @@ add_executable(main src/chunk.c src/chunk.h src/common.h src/debug.c src/debug.h
         src/compiler.c
         src/scanner.h
         src/scanner.c
+        src/table.h
+        src/table.c
         src/object.h
         src/object.c)
