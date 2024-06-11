@@ -1,5 +1,4 @@
-#ifndef CLOX_OBJECT_H
-#define CLOX_OBJECT_H
+#pragma once
 
 #include "common.h"
 #include "value.h"
@@ -34,5 +33,3 @@ void printObject(Value value);
 static inline bool isObjType(Value value, ObjType type) {
   return IS_OBJ(value) && AS_OBJ(value)->type == type;
 }
-
-#endif // !CLOX_OBJECT_H
