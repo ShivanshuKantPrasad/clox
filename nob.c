@@ -62,11 +62,11 @@ int main(int argc, char **argv) {
   if (!nob_cmd_run_sync(cmd))
     return 1;
 
-  cmd.count = 0;
-  nob_cmd_append(&cmd, main_output);
-  nob_da_append_many(&cmd, argv, argc);
-  if (!nob_cmd_run_sync(cmd))
-    return 1;
+  // cmd.count = 0;
+  // nob_cmd_append(&cmd, main_output);
+  // nob_da_append_many(&cmd, argv, argc);
+  // if (!nob_cmd_run_sync(cmd))
+  //   return 1;
 
   return 0;
 }
