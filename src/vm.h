@@ -1,10 +1,18 @@
 #pragma once
 
-#include "chunk.h"
+#include "object.h"
 #include "table.h"
 #include "value.h"
+#include <stdint.h>
 
+#define FRAMES_MAX 64
 #define STACK_INIT 256
+
+typedef struct {
+  ObjFunction *function;
+  uint8_t *ip;
+  Value *slots;
+} CallFrame;
 
 typedef struct {
   Value *values;
@@ -13,8 +21,8 @@ typedef struct {
 } Stack;
 
 typedef struct {
-  Chunk *chunk;
-  uint8_t *ip;
+  CallFrame frames[FRAMES_MAX];
+  int frameCount;
   Stack *stack;
   Table globals;
   Table strings;
