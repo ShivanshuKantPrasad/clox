@@ -78,7 +78,7 @@ void printObject(Value value) {
   switch (OBJ_TYPE(value)) {
   case OBJ_NATIVE:
     printf("<native fn>");
-
+    break;
   case OBJ_STRING:
     printf("%s", AS_CSTRING(value));
     break;

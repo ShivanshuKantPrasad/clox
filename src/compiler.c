@@ -598,6 +598,7 @@ static void forStatement() {
   beginScope();
   consume(TOKEN_LEFT_PAREN, "Expect '(' after 'for'.");
   if (match(TOKEN_SEMICOLON)) {
+    // No initializer.
   } else if (match(TOKEN_VAR)) {
     varDeclaration();
   } else {
@@ -680,7 +681,7 @@ static void whileStatement() {
   int loopStart = currentChunk()->count;
   consume(TOKEN_LEFT_PAREN, "Expect '(' after 'while'.");
   expression();
-  consume(TOKEN_LEFT_PAREN, "Expect '(' after condition.");
+  consume(TOKEN_RIGHT_PAREN, "Expect ')' after condition.");
 
   int exitJump = emitJump(OP_JUMP_IF_FALSE);
   emitByte(OP_POP);

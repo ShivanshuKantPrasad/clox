@@ -110,7 +110,7 @@ static bool call(ObjFunction *function, int argCount) {
   CallFrame *frame = &vm.frames[vm.frameCount++];
   frame->function = function;
   frame->ip = function->chunk.code;
-  frame->slots = &vm.stack->values[vm.stack->count] - argCount - 1;
+  frame->stack_pointer = vm.stack->count - argCount - 1;
   return true;
 }
 
@@ -192,8 +192,6 @@ static InterpretResult run() {
     case OP_CONSTANT: {
       Value constant = READ_CONSTANT();
       push(constant);
-      //        printValue(constant);
-      //        printf("\n");
       break;
     }
     case OP_NIL:
@@ -210,7 +208,7 @@ static InterpretResult run() {
       break;
     case OP_GET_LOCAL: {
       uint8_t slot = READ_BYTE();
-      push(frame->slots[slot]);
+      push(vm.stack->values[frame->stack_pointer + slot]);
       break;
     }
     case OP_GET_GLOBAL: {
@@ -231,7 +229,7 @@ static InterpretResult run() {
     }
     case OP_SET_LOCAL: {
       uint8_t slot = READ_BYTE();
-      frame->slots[slot] = peek(0);
+      vm.stack->values[frame->stack_pointer + slot] = peek(0);
       break;
     }
     case OP_SET_GLOBAL: {
@@ -291,8 +289,6 @@ static InterpretResult run() {
     case OP_CONSTANT_LONG: {
       Value constant = READ_LONG_CONSTANT();
       push(constant);
-      //        printValue(constant);
-      //        printf("\n");
       break;
     }
     case OP_PRINT: {
@@ -332,7 +328,7 @@ static InterpretResult run() {
         return INTERPRET_OK;
       }
 
-      vm.stack->count -= &vm.stack->values[vm.stack->count] - frame->slots;
+      vm.stack->count = frame->stack_pointer;
       push(result);
       frame = &vm.frames[vm.frameCount - 1];
       break;
@@ -359,7 +355,7 @@ InterpretResult interpret(const char *source) {
   CallFrame *frame = &vm.frames[vm.frameCount++];
   frame->function = function;
   frame->ip = function->chunk.code;
-  frame->slots = vm.stack->values;
+  frame->stack_pointer = vm.stack->count;
 
   return run();
 }
