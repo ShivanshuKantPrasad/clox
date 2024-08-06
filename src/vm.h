@@ -9,7 +9,7 @@
 #define STACK_INIT 256
 
 typedef struct {
-  ObjFunction *function;
+  ObjClosure *closure;
   uint8_t *ip;
   int stack_pointer;
 } CallFrame;
@@ -26,6 +26,7 @@ typedef struct {
   Stack *stack;
   Table globals;
   Table strings;
+  ObjUpvalue *openUpvalues;
   Obj *objects;
 } VM;
 
