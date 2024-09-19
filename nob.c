@@ -43,6 +43,45 @@ void cc(Nob_Cmd *cmd) {
   nob_cmd_append(cmd, "-O3");
 }
 
+const char *main_output = "./build/clox";
+
+bool build(Nob_Cmd *cmd) {
+  cmd->count = 0;
+  cc(cmd);
+  nob_cmd_append(cmd, "-o", main_output);
+  add_dir_recursively(cmd, "./src");
+  if (!nob_cmd_run_sync(*cmd))
+    return false;
+  return true;
+}
+
+bool run(Nob_Cmd *cmd, int argc, char **argv) {
+  if (!build(cmd))
+    return false;
+
+  cmd->count = 0;
+  nob_cmd_append(cmd, main_output);
+  nob_da_append_many(cmd, argv, argc);
+  if (!nob_cmd_run_sync(*cmd))
+    return false;
+  return true;
+}
+
+bool test(Nob_Cmd *cmd) {
+  if (!build(cmd))
+    return false;
+
+  cmd->count = 0;
+  nob_cmd_append(cmd, "dart", "tool/bin/test.dart");
+  nob_cmd_append(cmd, "c");
+  nob_cmd_append(cmd, "-i", "build/clox");
+
+  if (!nob_cmd_run_sync(*cmd))
+    return false;
+
+  return true;
+}
+
 int main(int argc, char **argv) {
   NOB_GO_REBUILD_URSELF(argc, argv);
 
@@ -54,19 +93,23 @@ int main(int argc, char **argv) {
   if (!nob_mkdir_if_not_exists("./build/"))
     return 1;
 
-  const char *main_output = "./build/clox";
-  cmd.count = 0;
-  cc(&cmd);
-  nob_cmd_append(&cmd, "-o", main_output);
-  add_dir_recursively(&cmd, "./src");
-  if (!nob_cmd_run_sync(cmd))
-    return 1;
+  if (argc > 0) {
+    const char *subcmd = nob_shift_args(&argc, &argv);
 
-  // cmd.count = 0;
-  // nob_cmd_append(&cmd, main_output);
-  // nob_da_append_many(&cmd, argv, argc);
-  // if (!nob_cmd_run_sync(cmd))
-  //   return 1;
+    if (strcmp(subcmd, "run") == 0) {
+      if (!run(&cmd, argc, argv))
+        return 1;
+    } else if (strcmp(subcmd, "test") == 0) {
+      if (!test(&cmd))
+        return 1;
+    } else {
+      if (!build(&cmd))
+        return 1;
+    }
+  } else {
+    if (!build(&cmd))
+      return 1;
+  }
 
   return 0;
 }
