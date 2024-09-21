@@ -73,8 +73,7 @@ bool test(Nob_Cmd *cmd) {
 
   cmd->count = 0;
   nob_cmd_append(cmd, "dart", "tool/bin/test.dart");
-  nob_cmd_append(cmd, "c");
-  nob_cmd_append(cmd, "-i", "build/clox");
+  nob_cmd_append(cmd, "clox");
 
   if (!nob_cmd_run_sync(*cmd))
     return false;
