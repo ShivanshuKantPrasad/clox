@@ -333,8 +333,9 @@ static InterpretResult run() {
       push(NUMBER_VAL(-AS_NUMBER(pop())));
       break;
     case OP_CONSTANT_LONG: {
-      Value constant = READ_LONG_CONSTANT();
-      push(constant);
+      // FIXME: This results in Werror: Sequence-Point
+      /* Value constant = READ_LONG_CONSTANT(); */
+      /* push(constant); */
       break;
     }
     case OP_PRINT: {
