@@ -23,6 +23,12 @@ void initScanner(const char *source) {
   scanner.line = 1;
 }
 
+static bool isAlpha(char c) { return isalpha(c) || c == '_'; }
+
+static bool isDigit(char c) { return isdigit(c); }
+
+static bool isAlNum(char c) { return isAlpha(c) || isDigit(c); }
+
 static bool isAtEnd() { return *scanner.current == '\0'; }
 
 static char advance() {
@@ -153,20 +159,20 @@ static TokenType identifierType() {
 }
 
 static Token identifier() {
-  while (isalnum(peek()))
+  while (isAlNum(peek()))
     advance();
   return makeToken(identifierType());
 }
 
 static Token number() {
-  while (isdigit(peek()))
+  while (isDigit(peek()))
     advance();
 
-  if (peek() == '.' && isdigit(peekNext())) {
+  if (peek() == '.' && isDigit(peekNext())) {
     // Consume the "."
     advance();
 
-    while (isdigit(peek()))
+    while (isDigit(peek()))
       advance();
   }
 
@@ -196,9 +202,9 @@ Token scanToken() {
 
   char c = advance();
 
-  if (isalpha(c))
+  if (isAlpha(c))
     return identifier();
-  if (isdigit(c))
+  if (isDigit(c))
     return number();
 
   switch (c) {
