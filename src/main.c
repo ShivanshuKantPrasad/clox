@@ -57,6 +57,16 @@ static void runFile(const char *path) {
 int main(int argc, const char *argv[]) {
   initVM();
 
+#ifdef DEBUG_PRINT_CODE
+  printf("DEBUG_PRINT_CODE enabled.");
+#endif
+#ifdef DEBUG_LOG_GC
+  printf("DEBUG_LOG_GC enabled.");
+#endif
+#ifdef DEBUG_TRACE_EXECUTION
+  printf("DEBUG_TRACE_EXECUTION enabled.");
+#endif
+
   if (argc == 1) {
     repl();
   } else if (argc == 2) {

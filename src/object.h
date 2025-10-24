@@ -29,6 +29,7 @@ typedef enum {
 
 struct Obj {
   ObjType type;
+  bool isMarked;
   struct Obj *next;
 };
 
@@ -78,4 +79,20 @@ void printObject(Value value);
 
 static inline bool isObjType(Value value, ObjType type) {
   return IS_OBJ(value) && AS_OBJ(value)->type == type;
+}
+
+static inline char *objTypeToString(ObjType type) {
+  switch (type) {
+
+  case OBJ_STRING:
+    return "OBJ_STRING";
+  case OBJ_NATIVE:
+    return "OBJ_NATIVE";
+  case OBJ_CLOSURE:
+    return "OBJ_CLOSURE";
+  case OBJ_FUNCTION:
+    return "OBJ_FUNCTION";
+  case OBJ_UPVALUE:
+    return "OBJ_UPVALUE";
+  }
 }
