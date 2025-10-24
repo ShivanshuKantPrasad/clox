@@ -591,7 +591,7 @@ static ParseRule *getRule(TokenType type) { return &rules[type]; }
 static void expression() { parsePrecedence(PREC_ASSIGNMENT); }
 
 static void varDeclaration() {
-  uint8_t global = parseVariable("Expect Variable name.");
+  uint8_t global = parseVariable("Expect variable name.");
 
   if (match(TOKEN_EQUAL)) {
     expression();
